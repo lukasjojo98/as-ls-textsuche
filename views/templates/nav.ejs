@@ -1,0 +1,107 @@
+<nav>
+  <div style="float:left"><a id="homebutton" href="/"><h1>Home</h1></a>
+  </div>
+  <h1 id="translation-type">Schwere nach <em>Leichte Sprache</em> Übersetzungssuche</h1>
+  <div class="search-container">
+    <form action="/search" method="POST">
+      <input
+        type="text"
+        placeholder="Stichwort in der schweren Sprache"
+        name="stichwort"
+        class="search-input"
+        id="searchInput"
+      />
+      <input type="hidden"   style="display: none;" id="translation-type-name" name="translation-type-name" value="AS"/>
+      <button
+        id="search-button"
+        class="search-button"
+        type="submit"
+      >
+      <input type="hidden" style="display: none;" id="fuzzy-search" name="fuzzy-search" value="off">
+      <input type="hidden" style="display: none;" name="manuell" id="manuell" value="off">
+      <input type="hidden" style="display: none;" name="assistent" id="assistent" value="off">
+      
+        <span class="material-icons white-icon"> search </span>
+      </button>
+      <div class="sortierbuttons">
+        <div style="padding-top: 10px;">
+          <p>Score</p>
+        <button id="scoreAscend" name="scoreOrder" type="submit" value="ascend" onclick="changeScoreOrder(this)" class="score">
+        <span class="material-icons white-icon"> arrow_upward </span>
+          </button>
+        <button id="scoreDescend" name="scoreOrder" type="submit" value="descend" onclick="changeScoreOrder(this)" class="score">
+          <span class="material-icons white-icon"> arrow_downward </span>
+          </button>
+          </div>
+      <div style="padding-top: 10px;">
+        <p>Datum</p>
+      <button id="dateAscend" name="dateOrder" type="submit" value="ascend" onclick="changeDateOrder(this)" class="score">
+      <span class="material-icons white-icon"> arrow_upward </span>
+        </button>
+      <button id="dateDescend" name="dateOrder" type="submit" value="descend" onclick="changeDateOrder(this)" class="score">
+        <span class="material-icons white-icon"> arrow_downward </span>
+        </button>
+        </div>
+      </div>
+  </form>
+  </div>
+  <div class="suchkriterien">
+  <input type="checkbox" name="fuzzysearch" onclick="changeFuzzySearch()" id="checkboxfuzzy">
+  <label for="fuzzysearch">Fuzzy Search</label>
+        <input type="checkbox" name="manuell" value="manuell" onchange="changeCheckbox(this)">
+        <label for="manuell">Manuell Aligniert</label>
+        <input type="checkbox" name="assistent" value="assistent" onchange="changeCheckbox(this)">
+        <label for="assistent">Alignierassistent</label>
+      <span>
+        <label class="switch">
+          <input type="checkbox" onclick="changeTranslation()">
+          <span class="slider round"></span>
+        </label>    
+        <p>Sprachen tauschen</p>
+      </span>
+  </div>
+  <script>var boolAS = true;
+
+function changeCheckbox(element){
+      checkboxesManuell = document.querySelectorAll("#manuell")[0];
+      checkboxesAssistent = document.querySelectorAll("#assistent")[0];
+    if(element.name == "manuell" && checkboxesManuell.value == "off"){
+      checkboxesManuell.value = "on";
+    }
+    else if(element.name == "assistent" && checkboxesAssistent.value == "off"){
+      checkboxesAssistent.value = "on";
+    }
+    else if(element.name == "manuell" && checkboxesManuell.value == "on"){
+      checkboxesManuell.value = "off";
+    }
+    else if(element.name == "assistent" && checkboxesAssistent.value == "on"){
+      checkboxesAssistent.value = "off";
+    }
+          }
+    function changeTranslation(){
+      if(document.getElementById("translation-type-name").value == "LS"){
+        document.getElementById("searchInput").placeholder = "Stichwort in der schweren Sprache"
+        document.getElementById("translation-type").innerHTML = "Schwere nach <em>Leichte Sprache</em> Übersetzungssuche";
+        document.getElementById("translation-type-name").value = "AS";
+      }
+      else{
+        document.getElementById("searchInput").placeholder = "Stichwort in der leichten Sprache"
+        document.getElementById("translation-type").innerHTML = "<em>Leichte</em> nach Schwere Sprache Übersetzungssuche";
+        document.getElementById("translation-type-name").value = "LS";
+      }
+    }
+    function changeFuzzySearch(){
+      if(document.getElementById("fuzzy-search").value == "off"){
+        document.getElementById("checkboxfuzzy").checked = true;
+        document.getElementById("fuzzy-search").value = "on";
+      }
+      else if(document.getElementById("fuzzy-search").value == "on"){
+        document.getElementById("checkboxfuzzy").checked = false;
+        document.getElementById("fuzzy-search").value = "off";
+
+      }
+    }
+
+  </script>
+  
+</nav>

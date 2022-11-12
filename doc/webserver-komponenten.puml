@@ -1,0 +1,32 @@
+@startuml Komponenten
+
+left to right direction
+
+actor Browser
+
+node "Express" {
+    boundary Router
+    [HandlerFunktionen]
+}
+
+node "Klasse" {
+    [RequestHandler]
+}
+
+cloud {
+   [MongoDB\nNative Driver]
+}
+
+database "AWP (MongoDB)" {
+    [Collection Alignierungen]
+}
+
+Browser ~~> [Router]
+[Router] ..> [HandlerFunktionen]
+
+[HandlerFunktionen] ..> [RequestHandler]
+
+[RequestHandler] .up.>  [MongoDB\nNative Driver]
+[MongoDB\nNative Driver] ~~>  [Collection Alignierungen]
+
+@enduml

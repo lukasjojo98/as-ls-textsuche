@@ -1,0 +1,21 @@
+@startuml RequestHandler und Handler Funktionen
+
+
+class "HandlerFunktionen" <<boundary>> {
+    + getHomepage(req,res)
+    + findDocuments(req, res)
+    + redirectToHomepage(req, res)
+}
+hide "HandlerFunktionen" <<boundary>> circle
+
+
+class "RequestHandler" << control >> {
+    + getHomepage(req,res)
+    + findDocuments(req, res)
+    + redirectToHomepage(req, res)
+}
+
+
+"HandlerFunktionen" ..> "RequestHandler"
+hide empty members
+@enduml

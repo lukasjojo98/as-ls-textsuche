@@ -1,0 +1,64 @@
+<div class="noResults">
+  <table class="noResults-header">
+    <tr>
+      <td>
+        <img src="images/noResults.svg" />
+      </td>
+      <td>
+        <h2>
+          Es konnten keine Ergebnisse <br />
+          gefunden werden.
+        </h2>
+      </td>
+    </tr>
+  </table>
+  <div class="noResults-tipps">
+    <h3>Ein paar Hinweise zur Verbesserung der Suche:</h3>
+    <br />
+    <ul>
+      <li>
+        Die Resultate sind <strong>unabhängig</strong> von Groß- und
+        Kleinschreibung der Stichworte
+      </li>
+      <br />
+      <li>
+        Die Stichwörter dürfen sich maximal in
+        <strong>einem</strong> Zeichen von den Wörtern in der Datenbank
+        unterscheiden, um einen Suchtreffer zu erzielen. Das Stichwort
+        <i>Inklusio</i> führt demnach bei den Wörtern
+        <i>inklusi<em>v</em></i> oder <i>Inklusio<em>n</em></i> zu einem
+        Treffer. Das Wort <i>inklusi<em>ve</em></i> löst jedoch keinen
+        Suchtreffer aus.
+      </li>
+      <br />
+      <li>
+        <p>
+          Ein Stichwort kann mit dem <strong>Wildcard-Zeichen</strong>
+          <em>*</em> ergänzt werden. Es agiert dabei als Platzhalter für eine
+          Folge von 0 bis n Buchstaben. Die Plazierung des Zeichens kann
+          variabel am Anfang, am Ende und innerhalb eines Wortes erfolgen.
+        </p>
+        <br />
+        <h4>Beispiel für das Stichwort <em>Geschäft*</em> :</h4>
+        <p>
+          Hier werden alle schweren Texte gefunden, in denen mindestens ein Wort
+          vorkommt, dass mit dem Wortteil <i>Geschäft</i> beginnt und enventuell
+          von weiteren Buchstaben gefolgt wird.
+          <br />
+          Folgende Wörter führen beispielsweise zu einem Suchtreffer:
+          <i>Geschäft, Geschäftsstelle, Geschäftsstab, Geschäftsreport...</i>
+        </p>
+        <h4>Beispiel für das Stichwort <em>H*s</em>:</h4>
+        <p>
+          Damit ein schwerer Text über dieses Stichwort gefunden wird, muss darin
+          mindestens ein Wort vorkommen, das mit dem Buchstaben
+          <i>H</i> beginnt, mit <i>s</i> endet und dazwischen ein beliebige
+          Folge von Buchstaben ausfweist.
+          <br />
+          Folgende Wörter führen beispielsweise zu einem Suchtreffer:
+          <i>Haus, Hs, höchstens, habs, Hunds, Haus, Homepages...</i>
+        </p>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,460 @@
+<%- include('../templates/head')-%>
+
+  <body>
+    <nav>
+      <div style="float:left"><a id="homebutton" href="/"><h1>Home</h1></a>
+      </div>
+        <% if (translationType == 'AS') { %>
+            <h1 id="translation-type">Schwere nach <em>Leichte Sprache</em> Übersetzungssuche</h1>
+            <%} else if(translationType == 'LS') {%>
+                <h1 id="translation-type"><em>Leichte</em> nach Schwere Sprache Übersetzungssuche</h1>
+                <% }%>
+        <div class="search-container">
+          <form action="/search" method="POST">
+            <input
+              type="text"
+              placeholder="Stichwort in der schweren Sprache"
+              name="stichwort"
+              class="search-input"
+              id="searchInput"
+              value="<%=searchTerm%>"
+            />
+            <% if (translationType == 'AS') { %>
+                <input type="hidden"   style="display: none;" id="translation-type-name" name="translation-type-name" value="AS"/>
+                <%} else if(translationType == 'LS') {%>
+                    <input type="hidden"   style="display: none;" id="translation-type-name" name="translation-type-name" value="LS"/>
+                    <% }%>
+            <button
+              id="search-button"
+              class="search-button"
+              type="submit"
+            >
+            <span class="material-icons white-icon"> search </span>
+            </button>
+            <div class="sortierbuttons">
+                <div style="padding-top: 10px;">
+                  <p>Score</p>
+                <button id="scoreAscend" name="scoreOrder" type="submit" value="ascend" onclick="changeScoreOrder(this)" class="score">
+                  <% if (scoreOrder == 'ascend') { %>
+                <span class="material-icons black-icon"> arrow_upward </span>
+                <%} else if(scoreOrder == 'descend') {%>
+                  <span class="material-icons white-icon"> arrow_upward </span>
+                  <%} else if(scoreOrder == 'none') {%>
+                    <span class="material-icons white-icon"> arrow_upward </span>
+                    <% }%>
+                  </button>
+                <button id="scoreDescend" name="scoreOrder" type="submit" value="descend" onclick="changeScoreOrder(this)" class="score">
+                  <% if (scoreOrder == 'descend') { %>
+                    <span class="material-icons black-icon"> arrow_downward </span>
+                    <%} else if(scoreOrder == 'ascend') {%>
+                      <span class="material-icons white-icon"> arrow_downward </span>
+                      <%} else if(scoreOrder == 'none') {%>
+                        <span class="material-icons white-icon"> arrow_downward </span>
+                        <% }%>
+                    </button>
+                  </div>
+              <div style="padding-top: 10px;">
+                <p>Datum</p>
+              <button id="dateAscend" name="dateOrder" type="submit" value="ascend" onclick="changeDateOrder(this)" class="score">
+                <% if (dateOrder == 'ascend') { %>
+                  <span class="material-icons black-icon"> arrow_upward </span>
+                  <%} else if(dateOrder == 'descend') {%>
+                    <span class="material-icons white-icon"> arrow_upward </span>
+                    <%} else if(dateOrder == 'none') {%>
+                      <span class="material-icons white-icon"> arrow_upward </span>
+                      <% }%>                </button>
+              <button id="dateDescend" name="dateOrder" type="submit" value="descend" onclick="changeDateOrder(this)" class="score">
+                <% if (dateOrder == 'descend') { %>
+                  <span class="material-icons black-icon"> arrow_downward </span>
+                  <%} else if(dateOrder == 'ascend') {%>
+                    <span class="material-icons white-icon"> arrow_downward </span>
+                    <%} else if(dateOrder == 'none') {%>
+                      <span class="material-icons white-icon"> arrow_downward </span>
+                      <% }%>                </button>
+                </div>
+              </div>
+           
+            <% if (fuzzySearch == 'on') { %>
+              <input type="hidden" style="display: none;" id="fuzzy-search" name="fuzzy-search" value="on">
+              <%} else if(fuzzySearch == 'off') {%>
+                <input type="hidden" style="display: none;" id="fuzzy-search" name="fuzzy-search" value="off">
+                <% }%>
+
+               <% if (suchErgebnisse["manuell"] == 'on') { %>
+            <input type="hidden" style="display: none;" name="manuell" id="manuell" value="on" checked>
+            <%}  if (suchErgebnisse["manuell"] == 'off') { %>
+              <input type="hidden" style="display: none;" name="manuell" id="manuell" value="off" >
+                  <%}  if (suchErgebnisse["assistent"] == 'on') { %>
+            <input type="hidden" style="display: none;" name="assistent" id="assistent" value="on" checked>
+            <%}  if (suchErgebnisse["assistent"] == 'off') { %>
+              <input type="hidden" style="display: none;" name="assistent" id="assistent" value="off" >
+                        <%}%>
+              
+          </form>
+        </div>
+        <div class="suchkriterien">
+        <% if (fuzzySearch == 'on') { %>
+          <input type="checkbox" name="fuzzysearch" onclick="changeFuzzySearch()" id="checkboxfuzzy" checked>  
+          <%} else if(fuzzySearch == 'off') {%>
+            <input type="checkbox" name="fuzzysearch" onclick="changeFuzzySearch()" id="checkboxfuzzy">  
+            <% }%>
+            <label for="fuzzysearch">Fuzzy Search</label>
+            <% if (suchErgebnisse["manuell"] == "on") { %>
+            <input type="checkbox" name="manuell" value="alle" onchange="changeCheckbox(this)" checked>
+            <label for="manuell">Manuell Aligniert</label>
+            <%}  if (suchErgebnisse["manuell"] == "off") { %>
+            <input type="checkbox" name="manuell" value="alle" onchange="changeCheckbox(this)">
+            <label for="assistent">Manuell Aligniert</label>
+            <%} if (suchErgebnisse["assistent"] == "on") { %>
+            <input type="checkbox" name="assistent" value="alle" onchange="changeCheckbox(this)" checked>
+            <label for="manuell">Alignierassistent</label>
+              <%}  if (suchErgebnisse["assistent"] == "off") { %>
+            <input type="checkbox" name="assistent" value="alle" onchange="changeCheckbox(this)">
+            <label for="manuell">Alignierassistent</label>
+                <%} %>
+          <span>
+            <label class="switch">
+              <% if (translationType == 'AS') { %>
+            <input type="checkbox" onclick="changeTranslation()" id="toggleLanguage" unchecked>
+            <%} else if(translationType == 'LS') {%>
+              <input type="checkbox" onclick="changeTranslation()" id="toggleLanguage" checked>
+              <% }%>
+            <span class="slider round"></span>
+          </label>    
+        <p>Sprachen tauschen</p>
+      </span>     
+        </div>
+        <script>
+
+    function changeScoreOrder(element){
+      if(element.id == "scoreAscend"){
+        element.value = "ascend";
+      }
+      else if(element.id == "scoreDescend"){
+        element.value = "descend";
+      }
+    }
+    function changeDateOrder(element){
+      if(element.id == "dateAscend"){
+        element.value = "ascend";
+      }
+      else if(element.id == "dateDescend"){
+        element.value = "descend";
+      }
+    }
+    function changeCheckbox(element){
+      checkboxesManuell = document.querySelectorAll("#manuell")[0];
+      checkboxesAssistent = document.querySelectorAll("#assistent")[0];
+    if(element.name == "manuell" && checkboxesManuell.value == "off"){
+      checkboxesManuell.value = "on";
+    }
+    else if(element.name == "assistent" && checkboxesAssistent.value == "off"){
+      checkboxesAssistent.value = "on";
+    }
+    else if(element.name == "manuell" && checkboxesManuell.value == "on"){
+      checkboxesManuell.value = "off";
+    }
+    else if(element.name == "assistent" && checkboxesAssistent.value == "on"){
+      checkboxesAssistent.value = "off";
+    }
+          }
+          var boolAS = true;
+        function changeTranslation(){
+          if(document.getElementById("translation-type-name").value == "LS"){
+            document.getElementById("searchInput").placeholder = "Stichwort in der schweren Sprache"
+            document.getElementById("translation-type").innerHTML = "Schwere nach <em>Leichte Sprache</em> Übersetzungssuche";
+            document.getElementById("translation-type-name").value = "AS";
+          }
+          else{
+            document.getElementById("searchInput").placeholder = "Stichwort in der leichten Sprache"
+            document.getElementById("translation-type").innerHTML = "<em>Leichte</em> nach Schwere Sprache Übersetzungssuche";
+            document.getElementById("translation-type-name").value = "LS";
+          }
+        }
+        function changeFuzzySearch(){
+      if(document.getElementById("fuzzy-search").value == "off"){
+        document.getElementById("checkboxfuzzy").checked = true;
+        document.getElementById("fuzzy-search").value = "on";
+      }
+      else if(document.getElementById("fuzzy-search").value == "on"){
+        document.getElementById("checkboxfuzzy").checked = false;
+        document.getElementById("fuzzy-search").value = "off";
+      }
+
+    }
+        </script>
+        
+      </nav>
+      <br>
+      <br>
+
+    <div id="translationList" class="searchResults">
+        <% if (noSearchTerm) { %>
+            <div class="noSearchTerms">Mindestens ein Stichwort ist für die Suche notwendig!</div>
+
+        <% } else if (alignierungen.length === 0)  { %>
+            <%- include('../templates/noResults')-%>
+            
+        <% } else if(translationType == 'AS') { %> 
+
+            <% for(var i = 0; i < alignierungen.length; i++) { %>
+            <div class="translation">
+                <table class="translation-table">
+                    <tr>
+                        
+                        <td class="translation-text" ><%= alignierungen[i].AS %></td>
+                        <td class="translation-text" id="leichteSpracheText"><%= alignierungen[i].LS %></td>
+                    </tr>
+                    <tr class="source">
+                        <td>
+                            <p>Quelle:</p>
+                            <a href="<%= alignierungen[i].QuelleAS %>"><%= alignierungen[i].QuelleAS %></a>
+                        </td>
+                        <td>
+                            <p>Quelle:</p>
+                            <a href="<%= alignierungen[i].QuelleLS %>"><%= alignierungen[i].QuelleLS %></a>
+                        </td>
+                    </tr>
+                    <tr class="info"><td><p>Score: <%= alignierungen[i].Score %></p></td>
+                    <td> <p>Date: <%= alignierungen[i].Datum %></p></td>
+                    </tr>
+                </table>
+            </div>
+            <% } %> 
+        
+        <% } else if(translationType == 'LS') { %> 
+            <% for(var i = 0; i < alignierungen.length; i++) { %>
+            <div class="translation">
+                <table class="translation-table" >
+                    <tr>
+                        
+                        <td class="translation-text" id="leichteSpracheText"><%= alignierungen[i].LS %></td>
+                        <td class="translation-text"><%= alignierungen[i].AS %></td>
+                    </tr>
+                    <tr class="source">
+                        <td>
+                            <p>Quelle:</p>
+                            <a href="<%= alignierungen[i].QuelleLS %>"><%= alignierungen[i].QuelleLS %></a>
+                        </td>
+                        <td>
+                            <p>Quelle:</p>
+                            <a href="<%= alignierungen[i].QuelleAS %>"><%= alignierungen[i].QuelleAS %></a>
+                        </td>
+                    </tr>
+                    <tr class="info"><td><p>Score: <%= alignierungen[i].Score %></p></td>
+                      <td> <p>Date: <%= alignierungen[i].Datum %></p></td>
+                      </tr>                
+                    </table>
+            </div>
+            <% } %>
+            <% } %>
+    </div>
+   <p id="searchTermID" style="display: none;"><%= searchTerm%></p>
+    <%- include('../templates/footer')-%>
+  </body>
+  <script>
+    function countInstances(string, word) {
+   return string.split(word).length - 1;
+}
+function getPosition(string, subString, index) {
+  return string.split(subString, index).join(subString).length;
+}
+function getFullWordPosition(string, subString, index){
+var firstAppearanceOfsubString = string.split(subString, index).join(subString).length;
+var firstAppearanceofFullWord = firstAppearanceOfsubString;
+var count = 0;
+for (var i = firstAppearanceOfsubString; i > 0; i--){
+  if(string[i] !== " "){
+    count++;
+  }
+  else{
+    break;
+  }
+}
+firstAppearanceofFullWord = firstAppearanceOfsubString - count;
+return firstAppearanceofFullWord;
+}
+function getTextAsStringArray(str) {
+			 return str.split(' ')
+			.map(item => item)
+
+		}
+      function highlightSearchTerm(){
+const translationList = document.getElementById("translationList").children;
+var searchTerm = document.getElementById("searchTermID").innerHTML;
+
+if(searchTerm[0] == "*"){
+  searchTerm = searchTerm.substring(1,searchTerm.length);
+  for (var i = 0; i < translationList.length; i++){ //Search with wildcard * at the beginning
+    for (var k = 0; k < 2; k++){ 
+    var tmpTable = translationList[i].querySelector("table");
+    var textLeftPart = tmpTable.rows[0].cells[k].innerHTML;
+    var textLeftPartLower = textLeftPart.toLowerCase();
+    var searchTermlowercase = searchTerm.toLowerCase();
+    var foundPosition = textLeftPartLower.search(searchTermlowercase);
+    var count = countInstances(textLeftPartLower, searchTermlowercase);
+    if(foundPosition == -1){
+    }
+    else if (count == 1){
+
+    var actualSearchTermLength = searchTerm.length;
+    for(var j = foundPosition; j > 0; j--){
+      if(textLeftPart[j] != " "){
+        actualSearchTermLength++;
+      }
+      else{
+        break;
+      }
+    }
+    
+    var firstPart = textLeftPart.substring(0,foundPosition - (actualSearchTermLength - searchTerm.length));
+    var secondPart = textLeftPart.substring(foundPosition - (actualSearchTermLength - searchTerm.length) + actualSearchTermLength, textLeftPart.length);
+    var foundWord = textLeftPart.substring(foundPosition - (actualSearchTermLength - searchTerm.length),foundPosition - (actualSearchTermLength - searchTerm.length) + actualSearchTermLength);
+    tmpTable.rows[0].cells[k].innerHTML = firstPart + "<span id='searchTerm'>" + foundWord + "</span>" + secondPart;
+  }
+    else if(count > 1){
+      var textLeftPartLowercaseArray = getTextAsStringArray(textLeftPartLower);
+      var textLeftPartOriginalArray = getTextAsStringArray(textLeftPart);
+
+      var finalText = "";
+      for(var u = 0; u < textLeftPartLowercaseArray.length; u++){
+        if(textLeftPartLowercaseArray[u].endsWith(searchTermlowercase)){
+          finalText += "<span id='searchTerm'>" + textLeftPartOriginalArray[u] + "</span>" + " ";
+        }
+        else{
+          finalText += textLeftPartOriginalArray[u] + " ";
+        }
+      }
+      tmpTable.rows[0].cells[k].innerHTML = finalText;
+    }
+  }
+}
+}
+ else if(searchTerm[searchTerm.length - 1] == "*"){
+  searchTerm = searchTerm.substring(0,searchTerm.length-1);
+for (var i = 0; i < translationList.length; i++){ //Search with wildcard * at the end
+  for (var k = 0; k < 2; k++){ 
+    var tmpTable = translationList[i].querySelector("table");
+    var textLeftPart = tmpTable.rows[0].cells[k].innerHTML;
+    var textLeftPartLower = textLeftPart.toLowerCase();
+    var searchTermlowercase = searchTerm.toLowerCase();
+    var foundPosition = textLeftPartLower.search(searchTermlowercase);
+    var count = countInstances(textLeftPartLower, searchTermlowercase);
+    if(foundPosition == -1){
+    }
+    else if (count == 1){
+    var actualSearchTermLength = searchTerm.length;
+    for(var j = foundPosition + searchTerm.length; j < textLeftPart.length; j++){
+      if(textLeftPart[j] != " "){
+        actualSearchTermLength++;
+      }
+      else{
+        break;
+      }
+    }
+    var firstPart = textLeftPart.substring(0,foundPosition);
+    var secondPart = textLeftPart.substring(foundPosition + actualSearchTermLength, textLeftPart.length);
+    var foundWord = textLeftPart.substring(foundPosition,foundPosition + actualSearchTermLength);
+    tmpTable.rows[0].cells[k].innerHTML = firstPart + "<span id='searchTerm'>" + foundWord + "</span>" + secondPart;
+    }
+    else if(count > 1){
+      var actualSearchTermLength = searchTerm.length;
+   
+      const placeHolder = [textLeftPart.substring(0,getPosition(textLeftPartLower,searchTermlowercase,1))];
+      for (var m = 1; m < count+1; m++){
+        for(var j = getPosition(textLeftPartLower,searchTermlowercase,m) + searchTerm.length; j < textLeftPart.length; j++){
+      if(textLeftPart[j] != " "){
+        actualSearchTermLength++;
+      }
+      else{
+        break;
+      }
+    }
+        placeHolder.push(textLeftPart.substring(getPosition(textLeftPartLower,searchTermlowercase,m),getPosition(textLeftPartLower,searchTermlowercase,m) + actualSearchTermLength));
+        placeHolder.push(textLeftPart.substring(getPosition(textLeftPartLower,searchTermlowercase,m) + actualSearchTermLength,getPosition(textLeftPartLower,searchTermlowercase,m+1)));
+      }
+      tmpTable.rows[0].cells[k].innerHTML = placeHolder[0];
+      for (var t = 1; t < placeHolder.length; t++){
+        if(t%2 == 1){
+          tmpTable.rows[0].cells[k].innerHTML += "<span id='searchTerm'>" +placeHolder[t]+"</span>";
+        }
+        else{
+          tmpTable.rows[0].cells[k].innerHTML += placeHolder[t];
+        }
+      }
+    }
+  }
+}
+}
+
+else if(searchTerm.includes("*") && searchTerm[0] != "*" && searchTerm[searchTerm.length - 1] != "*"){
+  for (var i = 0; i < translationList.length; i++){ //Search with wildcard * at the end
+  for (var k = 0; k < 2; k++){ 
+    var tmpTable = translationList[i].querySelector("table");
+    var textLeftPart = tmpTable.rows[0].cells[k].innerHTML;
+    var textLeftPartLower = textLeftPart.toLowerCase();
+    var searchTermlowercase = searchTerm.toLowerCase();
+  var prefix = searchTerm.split("*")[0].toLowerCase();
+  var suffix = searchTerm.split("*")[1].toLowerCase();
+  var textLeftPartLowercaseArray = getTextAsStringArray(textLeftPartLower);
+  console.log(textLeftPartLowercaseArray);
+  var textLeftPartOriginalArray = getTextAsStringArray(textLeftPart);
+
+      var finalText = "";
+      for(var u = 0; u < textLeftPartLowercaseArray.length; u++){
+        if(textLeftPartLowercaseArray[u].endsWith(suffix) && textLeftPartLowercaseArray[u].startsWith(prefix) ){
+          finalText += "<span id='searchTerm'>" + textLeftPartOriginalArray[u] + "</span>" + " ";
+        }
+        else{
+          finalText += textLeftPartOriginalArray[u] + " ";
+        }
+      }
+      tmpTable.rows[0].cells[k].innerHTML = finalText;
+    }
+  }
+}
+
+
+for (var i = 0; i < translationList.length; i++){
+  for (var j = 0; j < 2; j++){   //Search without wildcard *
+    var tmpTable = translationList[i].querySelector("table");
+    var textLeftPart = tmpTable.rows[0].cells[j].innerHTML;
+    var textLeftPartLower = textLeftPart.toLowerCase();
+    var searchTermlowercase = document.getElementById("searchTermID").innerHTML.toLowerCase();
+    var foundPosition = textLeftPartLower.search(searchTermlowercase);
+    var count = countInstances(textLeftPartLower, searchTermlowercase);
+    if(foundPosition == -1){
+    }
+    else if (count == 1){
+    var firstPart = textLeftPart.substring(0,foundPosition);
+    var secondPart = textLeftPart.substring(foundPosition + searchTerm.length, textLeftPart.length);
+    var foundWord = textLeftPart.substring(foundPosition,foundPosition + searchTerm.length);
+    tmpTable.rows[0].cells[j].innerHTML = firstPart + "<span id='searchTerm'>" + foundWord + "</span>" + secondPart;
+    }
+    else if(count > 1){
+      const placeHolder = [textLeftPart.substring(0,getPosition(textLeftPartLower,searchTermlowercase,1))];
+      for (var m = 1; m < count+1; m++){
+        placeHolder.push(textLeftPart.substring(getPosition(textLeftPartLower,searchTermlowercase,m),getPosition(textLeftPartLower,searchTermlowercase,m) + searchTerm.length));
+        placeHolder.push(textLeftPart.substring(getPosition(textLeftPartLower,searchTermlowercase,m) + searchTerm.length,getPosition(textLeftPartLower,searchTermlowercase,m+1)));
+      }
+      tmpTable.rows[0].cells[j].innerHTML = placeHolder[0];
+      for (var t = 1; t < placeHolder.length; t++){
+        if(t%2 == 1){
+          tmpTable.rows[0].cells[j].innerHTML += "<span id='searchTerm'>" +placeHolder[t]+"</span>";
+        }
+        else{
+          tmpTable.rows[0].cells[j].innerHTML += placeHolder[t];
+        }
+      }
+    }
+}
+}
+}
+document.addEventListener("DOMContentLoaded",highlightSearchTerm)
+  </script>
+  <style>
+      #searchTerm{
+          background-color: yellow;
+      }
+  </style>
+</html>
