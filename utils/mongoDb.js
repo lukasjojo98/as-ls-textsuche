@@ -12,9 +12,9 @@ export const mongoConnect = function(cb) {
             _db = client.db(DB_NAME).collection(COLLECTION_NAME);
             cb();
         })
-        .catch( () => {
+        /*.catch( () => {
             throw new Error('DB connection failed...');
-        });
+        });*/
 };
 
 export const getDB = () => {
