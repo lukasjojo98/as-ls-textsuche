@@ -10,7 +10,7 @@
     "node": "15.x"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "npm run dev",
     "dev": "nodemon server.js",
     "eslint": "eslint **/*.js"
   },
